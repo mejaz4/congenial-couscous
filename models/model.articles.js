@@ -13,4 +13,8 @@ ORDER BY created_at DESC;`)
 }
 
 
-module.exports = { selectArticles }
+const selectArticleById = () => {
+    return db.query(``)
+}
+
+module.exports = { selectArticles, selectArticleById }

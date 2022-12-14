@@ -7,4 +7,10 @@ const getArticles = (req, res, next) => {
     })
 }
 
-module.exports = {getArticles}
+const getArticleById = (req, res, next) => {
+    selectArticleById().then((articles) => {
+        res.status(200).send({articles})
+    })
+}
+
+module.exports = {getArticles, getArticleById}
