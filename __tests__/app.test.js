@@ -44,7 +44,6 @@ describe('2. GET /api/articles', () => {
         .get('/api/articles')
         .expect(200)
         .then(({ body: { articles } }) => {
-            console.log(articles, '<<treasure')
           expect(articles).toBeInstanceOf(Array);
           expect(articles).toHaveLength(12);
           articles.forEach((article) => {

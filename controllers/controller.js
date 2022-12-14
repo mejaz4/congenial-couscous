@@ -9,9 +9,7 @@ selectTopics().then((topics) => {
 }
 
 const getArticles = (req, res, next) => {
-    // console.log("here")
     selectArticles().then((articles) => {
-        // console.log("here??")
         res.status(200).send({articles})
     })
 }
