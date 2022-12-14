@@ -10,7 +10,7 @@ afterAll(() => {
 
 beforeEach(() => seed(testData))
 
-describe('1: GET api/treasures', () => {
+describe('1: GET api/topics', () => {
     test('200: responds with an array of topic objects', () => {
         return request(app)
             .get('/api/topics')
@@ -36,4 +36,28 @@ describe('1: GET api/treasures', () => {
             expect(msg).toBe('Invalid Path')
           })
       });
+})
+
+describe('2. GET /api/articles', () => {
+    test('status:200, responds with an array of articles objects', () => {
+      return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({ body: { articles } }) => {
+            console.log(articles, '<<treasure')
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles).toHaveLength(12);
+          articles.forEach((article) => {
+            expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(String),
+              })
+          });
+        });
+    })
 })
