@@ -13,8 +13,16 @@ ORDER BY created_at DESC;`)
 }
 
 
-const selectArticleById = () => {
-    return db.query(``)
-}
+const selectArticleById = (article_id) => {
+    const SQL = `SELECT author, title, article_id, body, topic, created_at, votes FROM articles
+    WHERE article_id = $1`;
+    
+    return db.query(SQL, [article_id]).then((results) => {
+        if (results.rowCount === 0) {
+            return Promise.reject({status: 404, msg: 'Not Found'});
+        }
+        return results.rows[0];
+    })
+};
 
 module.exports = { selectArticles, selectArticleById }

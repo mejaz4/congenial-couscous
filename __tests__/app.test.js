@@ -33,7 +33,7 @@ describe('1: GET api/topics', () => {
         return request(app)
           .get('/api/banana')
           .expect(404).then(({body: { msg }})=> {
-            expect(msg).toBe('Invalid Path')
+            expect(msg).toBe('Not Found')
           })
       });
 })
@@ -59,3 +59,44 @@ describe('2. GET /api/articles', () => {
         });
     })
 })
+
+describe('3. GET /api/articles/:article_id', () => {
+    test('status:200, responds with a single matching article', () => {
+      const articleId = 3;
+      return request(app)
+        .get(`/api/articles/${articleId}`)
+        .expect(200)
+        .then((response) => {
+            const article = response.body.article
+          expect(article).toEqual({
+            author: "icellusedkars",
+            title: 'Eight pug gifs that remind me of mitch',
+            article_id: articleId,
+            body: "some gifs",
+            topic: 'mitch',
+            created_at: "2020-11-03T09:12:00.000Z",
+            votes: 0,
+          });
+        });
+    });
+    test('400: invalid article_id', () => {
+        return request(app)
+        .get('/api/articles/bananas')
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('Bad Request')
+        })
+    })
+
+    test('404: valid article_id but doesnt exist', () => {
+        return request(app)
+        .get('/api/articles/30')
+        .expect(404)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('Not Found')
+        })
+    })
+
+  });
