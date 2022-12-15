@@ -1,4 +1,4 @@
-const {selectArticles, selectArticleById} = require('../models/model.articles')
+const {selectArticles, selectArticleById, selectArticleComments} = require('../models/model.articles')
 
 
 const getArticles = (req, res, next) => {
@@ -17,4 +17,14 @@ const getArticleById  = (req, res, next) => {
     });
   };
 
-module.exports = {getArticles, getArticleById}
+const getArticleComments = (req, res, next) => {
+  const article_id = req.params.article_id;
+  Promise.all([selectArticleById(article_id), selectArticleComments(article_id)]).then((results) => {
+    res.status(200).send( {comments: results[1]} );
+  })
+  .catch((err) => {
+    next(err);
+});
+}
+
+module.exports = {getArticles, getArticleById, getArticleComments}
