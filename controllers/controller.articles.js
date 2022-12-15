@@ -27,4 +27,12 @@ const getArticleComments = (req, res, next) => {
 });
 }
 
-module.exports = {getArticles, getArticleById, getArticleComments}
+const postCommentInArticle = (req, res, next) => {
+    const userInput = req.body
+    sendComment(userInput).then((newComment) => {
+      console.log(newComment, "controller response")
+      res.status(201).send({ newComment });
+    })
+}
+
+module.exports = {getArticles, getArticleById, getArticleComments, postCommentInArticle}

@@ -36,4 +36,15 @@ const selectArticleComments = (article_id) => {
     })
 }
 
-module.exports = { selectArticles, selectArticleById, selectArticleComments }
+
+const sendComment = (userInput) => {
+    // const newRestaurant = [restaurant_name, area_id, cuisine, website]
+    console.log(userInput)
+     const { restaurant_name, area_id, cuisine, website} = userInput;
+  return db.query('INSERT INTO restaurants (restaurant_name, area_id, cuisine, website) VALUES ($1, $2, $3, $4) RETURNING *;', [restaurant_name, area_id, cuisine, website]).then((result) => {
+    console.log(result.rows, "<< console logging result inside model")
+  return result.rows[0];
+  })
+  };
+
+module.exports = { selectArticles, selectArticleById, selectArticleComments, sendComment }
