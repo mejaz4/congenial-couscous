@@ -110,6 +110,7 @@ describe('4. GET /api/articles/:article_id/comments', () => {
       .then((response) => {
         const { comments } = response.body
         expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(2);
         comments.forEach((comment) => {
           expect(comment).toMatchObject({
             comment_id: expect.any(Number),
@@ -121,6 +122,18 @@ describe('4. GET /api/articles/:article_id/comments', () => {
         })
       });
   })
+  test('status:200, empty array test if article exists but doesnt have comments', () => {
+    const articleId = 12;
+    return request(app)
+      .get(`/api/articles/${articleId}/comments`)
+      .expect(200)
+      .then((response) => {
+        const { comments } = response.body
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(0);
+        expect(comments).toEqual([])
+      });
+    })
   test('404: valid article_id but doesnt exist', () => {
     return request(app)
       .get('/api/articles/30/comments')
@@ -140,4 +153,4 @@ describe('4. GET /api/articles/:article_id/comments', () => {
       })
   })
 
-});
+})
