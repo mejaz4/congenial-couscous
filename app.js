@@ -5,8 +5,9 @@ const {getArticles, getArticleById, getArticleComments, postCommentInArticle} = 
 const app = express();
 
 
-const {handle404Paths, handle400, handleCustomerErrors, handle500s} = require('./error.controller')
+const {handle404Paths, handleSql, handleCustomerErrors, handle500s} = require('./error.controller')
 
+app.use(express.json())
 
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
@@ -16,7 +17,7 @@ app.post('/api/articles/:article_id/comments', postCommentInArticle)
 
 app.all('*', handle404Paths);
 app.use(handleCustomerErrors)
-app.use(handle400);
+app.use(handleSql);
 app.use(handle500s);
 
 

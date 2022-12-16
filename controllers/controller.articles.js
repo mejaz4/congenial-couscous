@@ -1,4 +1,4 @@
-const {selectArticles, selectArticleById, selectArticleComments} = require('../models/model.articles')
+const {selectArticles, selectArticleById, selectArticleComments, sendComment} = require('../models/model.articles')
 
 
 const getArticles = (req, res, next) => {
@@ -28,11 +28,16 @@ const getArticleComments = (req, res, next) => {
 }
 
 const postCommentInArticle = (req, res, next) => {
-    const userInput = req.body
-    sendComment(userInput).then((newComment) => {
-      console.log(newComment, "controller response")
-      res.status(201).send({ newComment });
+  const article_id = req.params.article_id
+  const body = req.body.body
+  const username = req.body.username
+    sendComment(article_id, username, body).then((comment) => {
+      // console.log(newComment, "controller response")
+      res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err)
     })
 }
 
-module.exports = {getArticles, getArticleById, getArticleComments, postCommentInArticle}
+module.exports = { getArticles, getArticleById, getArticleComments, postCommentInArticle }
