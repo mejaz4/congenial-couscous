@@ -133,7 +133,7 @@ describe('4. GET /api/articles/:article_id/comments', () => {
         expect(comments).toHaveLength(0);
         expect(comments).toEqual([])
       });
-    })
+  })
   test('404: valid article_id but doesnt exist', () => {
     return request(app)
       .get('/api/articles/30/comments')
@@ -153,3 +153,131 @@ describe('4. GET /api/articles/:article_id/comments', () => {
       })
   })
 })
+
+
+describe('5. Post /api/articles/:article_id/comments', () => {
+  test('status: 201 responds with an object of a new comment', () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "To be, or not to be",
+    }
+    return request(app)
+      .post('/api/articles/2/comments')
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        // const {insertedComment} = response.body
+        // console.log(insertedComment, "inserted comment")
+        const comment = body.comment
+        expect(comment).toMatchObject({
+          comment_id: 19,
+          body: "To be, or not to be",
+          article_id: 2,
+          author: "butter_bridge",
+          votes: 0,
+          created_at: expect.any(String),
+        })
+      })
+  });
+  test('status: 201 posting a new comment to a valid article id with multiple keys, but will only accept body and author', () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "To be, or not to be",
+      article_id: 15,
+      topic: "the chronicles of narnia",
+    }
+    return request(app)
+      .post('/api/articles/7/comments')
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const comment = body.comment
+        expect(comment).toMatchObject({
+          comment_id: 19,
+          body: "To be, or not to be",
+          article_id: 7,
+          author: "butter_bridge",
+          votes: 0,
+          created_at: expect.any(String),
+        })
+      })
+  });
+  test('404: posting a comment to a valid but non-existent article returns not found', () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "To be, or not to be",
+    }
+    return request(app)
+      .post('/api/articles/100/comments')
+      .send(newComment)
+      .expect(404)
+      .then((response) => {
+        const msg = response.body.msg
+        expect(msg).toBe('Not Found')
+      })
+  })
+  test('400: posting a comment to a valid article id with username as number', () => {
+    const newComment = {
+      username: 3,
+      body: "To be, or not to be",
+    }
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        const msg = response.body.msg
+        expect(msg).toBe('Bad Request')
+      })
+  })
+  test('400: posting a comment to a valid article id with body as number', () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: 4,
+    }
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        const msg = response.body.msg
+        expect(msg).toBe('Bad Request')
+      })
+  })
+  test('400: posting a comment to a valid article id with a missing key', () => {
+    const newComment = {
+      username: "butter_bridge",
+    }
+    return request(app)
+      .post('/api/articles/10/comments')
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        const msg = response.body.msg
+        expect(msg).toBe('Bad Request')
+      })
+  })
+  test('400: posting a comment to an invalid article id returnsbad request', () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "hi!!",
+    }
+    return request(app)
+      .post('/api/articles/xxxx/comments')
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        const msg = response.body.msg
+        expect(msg).toBe('Bad Request')
+      })
+  })
+
+})
+//bad req invalid id
+
+// body VARCHAR NOT NULL, 400 bad req ""
+
+// author VARCHAR REFERENCES users(username) NOT NULL,
+// noit found author 404 not found
+// username cant be number
+// string of numbers,
