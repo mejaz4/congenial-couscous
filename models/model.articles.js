@@ -39,8 +39,7 @@ const selectArticleComments = (article_id) => {
 
 const sendComment = (article_id, username, body) => {
 
-
-    if (typeof(username) !== "string" || typeof(body) !== "string") {
+    if (typeof username !== "string" || typeof body !== "string") {
         return Promise.reject({ status: 400, msg: 'Bad Request' });
     }
     return db.query(`INSERT INTO comments 
@@ -52,4 +51,18 @@ const sendComment = (article_id, username, body) => {
     })
 };
 
-module.exports = { selectArticles, selectArticleById, selectArticleComments, sendComment }
+
+const updateVotesInArticles = (inc_votes, article_id) => {
+
+    return db
+    .query(`
+    UPDATE articles
+    SET votes = votes + $1
+    WHERE article_id = $2
+    RETURNING *;`, [inc_votes, article_id])
+    .then((result)=>{
+        return result.rows
+    })
+}
+
+module.exports = { updateVotesInArticles, selectArticles, selectArticleById, selectArticleComments, sendComment }
