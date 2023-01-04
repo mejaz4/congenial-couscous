@@ -49,7 +49,6 @@ const patchVotesInArticle = (req, res, next) => {
   .catch((err) => {
     next(err)
   })
-
 }
 
 module.exports = { patchVotesInArticle, getArticles, getArticleById, getArticleComments, postCommentInArticle }

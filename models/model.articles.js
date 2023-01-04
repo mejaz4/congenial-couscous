@@ -51,7 +51,6 @@ const sendComment = (article_id, username, body) => {
     })
 };
 
-
 const updateVotesInArticles = (inc_votes, article_id) => {
 
     return db
