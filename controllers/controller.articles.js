@@ -1,4 +1,4 @@
-const {selectArticles, selectArticleById, selectArticleComments, sendComment} = require('../models/model.articles')
+const {updateVotesInArticles, selectArticles, selectArticleById, selectArticleComments, sendComment} = require('../models/model.articles')
 
 
 const getArticles = (req, res, next) => {
@@ -40,4 +40,16 @@ const postCommentInArticle = (req, res, next) => {
     })
 }
 
-module.exports = { getArticles, getArticleById, getArticleComments, postCommentInArticle }
+const patchVotesInArticle = (req, res, next) => {
+  const article_id = req.params.article_id
+  const inc_votes = req.body.inc_votes
+  Promise.all([selectArticleById(article_id), updateVotesInArticles(inc_votes, article_id)]).then((resolvedPromises) => {
+    res.status(200).send( {updatedVotes: resolvedPromises[1][0]});
+  })
+  .catch((err) => {
+    next(err)
+  })
+
+}
+
+module.exports = { patchVotesInArticle, getArticles, getArticleById, getArticleComments, postCommentInArticle }

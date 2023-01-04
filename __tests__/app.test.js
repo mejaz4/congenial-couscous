@@ -166,8 +166,6 @@ describe('5. Post /api/articles/:article_id/comments', () => {
       .send(newComment)
       .expect(201)
       .then(({ body }) => {
-        // const {insertedComment} = response.body
-        // console.log(insertedComment, "inserted comment")
         const comment = body.comment
         expect(comment).toMatchObject({
           comment_id: 19,
@@ -273,11 +271,93 @@ describe('5. Post /api/articles/:article_id/comments', () => {
   })
 
 })
+
+describe('6. PATCH/api/articles/:article_id', () => {
+  test('status: 200 responds with updated article after vote increment', () => {
+    return request(app)
+      .patch('/api/articles/3')
+      .send({ inc_votes: 45 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.updatedVotes).toMatchObject({
+          article_id: 3,
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: '2020-11-03T09:12:00.000Z',
+          votes: 45,
+        })
+      })
+  })
+  test('status: 200 responds with updated article after vote decrement', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({ inc_votes: -50 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.updatedVotes).toMatchObject({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: '2020-07-09T20:11:00.000Z',
+          votes: 50,
+        })
+      })
+  })
+  test('400: invalid article_id', () => {
+    return request(app)
+      .patch('/api/articles/bananas')
+      .send({ inc_votes: 8 })
+      .expect(400)
+      .then((response) => {
+        const msg = response.body.msg;
+        expect(msg).toBe('Bad Request')
+      })
+  })
+  test('400: string votes', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({ inc_votes: 'bh' })
+      .expect(400)
+      .then((response) => {
+        const msg = response.body.msg;
+        expect(msg).toBe('Bad Request')
+      })
+  })
+  test('404: valid article_id but doesnt exist', () => {
+    return request(app)
+      .patch('/api/articles/30')
+      .send({ inc_votes: 13 })
+      .expect(404)
+      .then((response) => {
+        const msg = response.body.msg;
+        expect(msg).toBe('Not Found')
+      })
+  })
+  test('400: invalid article_id', () => {
+    return request(app)
+      .patch('/api/articles/bananas')
+      .send({ inc_votes: 5 })
+      .expect(400)
+      .then((response) => {
+        const msg = response.body.msg;
+        expect(msg).toBe('Bad Request')
+      })
+  })
+})
+
+// /api/resource/:id body: {} -> malformed body / missing required fields: 400 Bad Request
+// /api/resource/:id body: { increase_votes_by: "word" } -> incorrect type: 400 Bad Request
+// votes not a number
+
 //bad req invalid id
 
 // body VARCHAR NOT NULL, 400 bad req ""
 
 // author VARCHAR REFERENCES users(username) NOT NULL,
-// noit found author 404 not found
+// not found author 404 not found
 // username cant be number
 // string of numbers,
