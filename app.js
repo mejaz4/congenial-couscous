@@ -2,9 +2,10 @@ const express = require('express');
 const {getTopics} = require('./controllers/controller.topics')
 const { patchVotesInArticle, getArticles, getArticleById, getArticleComments, postCommentInArticle} = require('./controllers/controller.articles')
 const cors = require('cors');
+const app = express();
 
 app.use(cors());
-const app = express();
+
 
 const {handle404Paths, handleSql, handleCustomerErrors, handle500s} = require('./error.controller');
 const seed = require('./db/seeds/seed');
