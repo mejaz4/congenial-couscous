@@ -349,6 +349,36 @@ describe('6. PATCH/api/articles/:article_id', () => {
   })
 })
 
+
+
+describe('8: GET api/users', () => {
+
+  test('200: responds with an array of user objects', () => {
+    return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then((result) => {
+        const users = result.body.users
+        expect(users).toHaveLength(4)
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String)
+            })
+          )
+        })
+      })
+  });
+  test('status:404, invalid path ', () => {
+    return request(app)
+      .get('/api/banana')
+      .expect(404).then(({ body: { msg } }) => {
+        expect(msg).toBe('Not Found')
+      })
+  });
+})
 // /api/resource/:id body: {} -> malformed body / missing required fields: 400 Bad Request
 // /api/resource/:id body: { increase_votes_by: "word" } -> incorrect type: 400 Bad Request
 // votes not a number
