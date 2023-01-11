@@ -1,5 +1,6 @@
 const express = require('express');
 const {getTopics} = require('./controllers/controller.topics')
+const {getUsers} = require('./controllers/controller.users')
 const { patchVotesInArticle, getArticles, getArticleById, getArticleComments, postCommentInArticle} = require('./controllers/controller.articles')
 const cors = require('cors');
 const app = express();
@@ -18,6 +19,7 @@ app.get('/api/articles/:article_id', getArticleById) ;
 app.get('/api/articles/:article_id/comments', getArticleComments)
 app.post('/api/articles/:article_id/comments', postCommentInArticle)
 app.patch('/api/articles/:article_id', patchVotesInArticle)
+app.get('/api/users', getUsers);
 app.get('/api/seed', (req, res, next) => {
      seed(devData).then(() => {
         res.send({msg:'seeded okay'})
